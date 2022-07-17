@@ -50,25 +50,41 @@ public class ListOfMapExample {
 
     @Test
     public void test2() throws SQLException {
-        Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM departments");
+            Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select first_name, last_name, salary, job_id\n" +
+                "from employees\n" +
+                "where rownum<6");
+
+        //in order to get coulmn name we need resultsedmetadata
+        ResultSetMetaData rsmd = resultSet.getMetaData();
 
         List<Map<String, Object>> queryData = new ArrayList<>();
 
+        resultSet.next();
+
         Map<String, Object> row1 = new HashMap<>();
-        row1.put("first_name", "Steven");
-        row1.put("last_name", "King");
-        row1.put("salary", 24000);
-        row1.put("job_id", "AD_PRES");
+        row1.put(rsmd.getColumnName(1), resultSet.getString(1));
+        row1.put(rsmd.getColumnName(2), resultSet.getString(2));
+        row1.put(rsmd.getColumnName(3),resultSet.getString(3));
+        row1.put(rsmd.getColumnName(4),resultSet.getString(4));
 
         System.out.println(row1.toString());
 
+        resultSet.next();
+
         Map<String, Object> row2 = new HashMap<>();
-        row2.put("first_name", "Neena");
+       /* row2.put("first_name", "Neena");
         row2.put("last_name", "Kochhar");
         row2.put("salary", 17000);
         row2.put("job_id", "AD_VP");
+
+        */
+        row2.put(rsmd.getColumnName(1), resultSet.getString(1));
+        row2.put(rsmd.getColumnName(2), resultSet.getString(2));
+        row2.put(rsmd.getColumnName(3),resultSet.getString(3));
+        row2.put(rsmd.getColumnName(4),resultSet.getString(4));
+
 
         System.out.println(row2.toString());
 
@@ -78,9 +94,8 @@ public class ListOfMapExample {
         System.out.println(queryData);
 
         //get the Steven lastname directly from the list
-        System.out.println(queryData.get(0).get("last_name"));
+        System.out.println(queryData.get(0).get("LAST_NAME"));
 
-        System.out.println(queryData.get(0).get("salary"));
 
 
         resultSet.close();
